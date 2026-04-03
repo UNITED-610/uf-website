@@ -424,6 +424,13 @@
   function isVideo(src) {
     return VIDEO_EXTS.some(ext => src.toLowerCase().endsWith(ext));
   }
+  function isYouTube(src) {
+    return src.includes('youtu.be/') || src.includes('youtube.com/');
+  }
+  function youTubeId(src) {
+    const m = src.match(/(?:youtu\.be\/|v=)([A-Za-z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
 
   let images = [];
   let currentIndex = 0;
@@ -465,9 +472,19 @@
     imgs.forEach((src, i) => {
       const item = document.createElement('div');
       item.className = 'grid-item';
-      const video = isVideo(src);
+      const yt = isYouTube(src);
+      const video = !yt && isVideo(src);
 
-      if (video) {
+      if (yt) {
+        const ytId = youTubeId(src);
+        item.innerHTML = `
+          <img src="https://img.youtube.com/vi/${ytId}/maxresdefault.jpg" alt="" loading="lazy">
+          <span class="video-badge">VIDEO</span>
+          <div class="grid-overlay">
+            <span class="overlay-icon">&#9654;</span>
+          </div>
+        `;
+      } else if (video) {
         item.innerHTML = `
           <video src="${src}" muted loop playsinline preload="metadata"></video>
           <span class="video-badge">VIDEO</span>
@@ -517,9 +534,11 @@
   function closeLightbox() {
     document.getElementById('lightbox').classList.remove('open');
     document.body.style.overflow = '';
-    // 動画が開いていれば停止
+    // 動画/iframeが開いていれば停止
     const vid = document.querySelector('.lightbox-inner video');
     if (vid) vid.pause();
+    const frame = document.querySelector('.lightbox-inner iframe');
+    if (frame) frame.src = frame.src; // srcの再セットで動画停止
   }
 
   function updateLightbox() {
@@ -529,7 +548,16 @@
     if (existing) existing.remove();
 
     let media;
-    if (isVideo(src)) {
+    if (isYouTube(src)) {
+      const ytId = youTubeId(src);
+      media = document.createElement('iframe');
+      media.src = `https://www.youtube.com/embed/${ytId}?autoplay=1`;
+      media.allow = 'autoplay; encrypted-media; fullscreen';
+      media.setAttribute('allowfullscreen', '');
+      media.style.width = '100%';
+      media.style.aspectRatio = '16/9';
+      media.style.border = 'none';
+    } else if (isVideo(src)) {
       media = document.createElement('video');
       media.src      = src;
       media.controls = true;
