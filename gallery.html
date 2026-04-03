@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery | United Functions</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Noto+Serif+JP:wght@300;400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:             #ffffff;
+      --bg-section:     #f4f2ee;
+      --gold:           #a07840;
+      --gold-light:     #7a5c28;
+      --gold-dim:       rgba(160, 120, 64, 0.08);
+      --text-primary:   #1a1714;
+      --text-secondary: #5a5450;
+      --text-muted:     #a09890;
+      --border:         rgba(160, 120, 64, 0.22);
+      --border-subtle:  rgba(0, 0, 0, 0.08);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: 'Inter', 'Noto Serif JP', sans-serif;
+      font-weight: 300;
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.5rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-logo img { height: 22px; opacity: 0.85; transition: opacity 0.3s; }
+    .nav-logo img:hover { opacity: 1; }
+
+    .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+    .nav-links a {
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      transition: color 0.3s;
+    }
+    .nav-links a:hover,
+    .nav-links a.active { color: var(--gold); }
+
+    .nav-toggle {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .nav-toggle span {
+      display: block; width: 24px; height: 1px;
+      background: var(--text-primary); transition: all 0.3s;
+    }
+
+    /* ─── PAGE HERO ─── */
+    .page-hero {
+      padding: 10rem 3rem 4rem;
+      text-align: center;
+      background: var(--bg-section);
+      position: relative;
+      overflow: hidden;
+    }
+    .page-hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 80% at 50% 60%, rgba(160,120,64,0.06) 0%, transparent 70%);
+    }
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--gold);
+      margin-bottom: 1rem;
+    }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-weight: 300;
+      letter-spacing: 0.08em;
+      color: var(--text-primary);
+      margin-bottom: 1rem;
+    }
+    .hero-sub {
+      font-size: 0.82rem;
+      color: var(--text-secondary);
+      letter-spacing: 0.1em;
+    }
+    .hero-line-bottom {
+      width: 1px; height: 60px;
+      background: linear-gradient(to bottom, var(--gold), transparent);
+      margin: 2.5rem auto 0;
+      opacity: 0.4;
+    }
+
+    /* ─── GALLERY SECTION ─── */
+    .gallery-section {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 5rem 2rem 8rem;
+    }
+
+    .filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .filter-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+    .instagram-link {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      text-decoration: none;
+      color: var(--text-secondary);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      border: 1px solid var(--border);
+      padding: 0.5rem 1rem;
+      transition: color 0.3s, border-color 0.3s;
+    }
+    .instagram-link:hover { color: var(--gold); border-color: var(--gold); }
+
+    /* ─── MASONRY GRID ─── */
+    .grid {
+      columns: 4;
+      column-gap: 10px;
+    }
+    @media (max-width: 1100px) { .grid { columns: 3; } }
+    @media (max-width: 720px)  { .grid { columns: 2; } }
+    @media (max-width: 420px)  { .grid { columns: 1; } }
+
+    .grid-item {
+      break-inside: avoid;
+      margin-bottom: 10px;
+      position: relative;
+      overflow: hidden;
+      background: var(--bg-section);
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.55s ease, transform 0.55s ease;
+    }
+    .grid-item.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .grid-item img,
+    .grid-item video {
+      display: block;
+      width: 100%;
+      height: auto;
+      transition: transform 0.5s ease;
+    }
+    .grid-item:hover img,
+    .grid-item:hover video {
+      transform: scale(1.04);
+    }
+    .grid-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(26,23,20,0);
+      transition: background 0.4s ease;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .grid-item:hover .grid-overlay {
+      background: rgba(26,23,20,0.35);
+    }
+    .overlay-icon {
+      color: rgba(255,255,255,0.9);
+      font-size: 1.1rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      width: 44px;
+      height: 44px;
+      border: 1px solid rgba(255,255,255,0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .grid-item:hover .overlay-icon {
+      opacity: 1;
+    }
+    /* 動画バッジ */
+    .video-badge {
+      position: absolute;
+      top: 0.6rem;
+      left: 0.6rem;
+      background: rgba(10,10,12,0.55);
+      color: rgba(255,255,255,0.85);
+      font-size: 0.6rem;
+      letter-spacing: 0.1em;
+      padding: 0.2rem 0.5rem;
+      pointer-events: none;
+    }
+
+    /* ─── LIGHTBOX ─── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,10,12,0.95);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+    .lightbox.open { display: flex; }
+
+    .lightbox-inner {
+      position: relative;
+      max-width: 1000px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .lightbox-inner img,
+    .lightbox-inner video {
+      max-width: 100%;
+      max-height: 85vh;
+      object-fit: contain;
+      display: block;
+    }
+
+    .lightbox-controls {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: calc(100% + 80px);
+      left: -40px;
+      display: flex;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+
+    .lb-arrow {
+      pointer-events: all;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: rgba(255,255,255,0.7);
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: background 0.3s, color 0.3s;
+      user-select: none;
+    }
+    .lb-arrow:hover { background: rgba(255,255,255,0.18); color: #fff; }
+
+    .lightbox-close {
+      position: absolute;
+      top: -2.8rem;
+      right: 0;
+      background: none;
+      border: none;
+      color: rgba(255,255,255,0.45);
+      font-size: 1.4rem;
+      cursor: pointer;
+      transition: color 0.3s;
+    }
+    .lightbox-close:hover { color: #fff; }
+
+    .lightbox-counter {
+      font-size: 0.68rem;
+      letter-spacing: 0.2em;
+      color: rgba(255,255,255,0.35);
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 3rem;
+      text-align: center;
+      border-top: 1px solid var(--border-subtle);
+      background: var(--bg-section);
+    }
+    .footer-logo { height: 28px; opacity: 0.7; margin-bottom: 1.2rem; }
+    .footer-text { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.15em; }
+
+    /* ─── MOBILE MENU ─── */
+    .mobile-menu {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,0.98);
+      z-index: 99;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 2.5rem;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--text-primary);
+      text-decoration: none;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 2rem;
+      letter-spacing: 0.1em;
+      transition: color 0.3s;
+    }
+    .mobile-menu a:hover { color: var(--gold); }
+    .mobile-close {
+      position: absolute; top: 1.5rem; right: 2rem;
+      background: none; border: none;
+      color: var(--text-secondary); font-size: 1.5rem; cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 1rem 1.5rem; }
+      .nav-links { display: none; }
+      .nav-toggle { display: flex; }
+      .page-hero { padding: 8rem 2rem 3rem; }
+      .gallery-section { padding: 3rem 1rem 5rem; }
+      .lightbox-controls { width: calc(100% + 48px); left: -24px; }
+      .lb-arrow { width: 36px; height: 36px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <img src="img/UFLogo_white2.png" alt="United Functions">
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#profile">Profile</a></li>
+    <li><a href="index.html#career">Career</a></li>
+    <li><a href="index.html#clients">Clients</a></li>
+    <li><a href="gallery.html" class="active">Gallery</a></li>
+    <li><a href="index.html#contact">Contact</a></li>
+  </ul>
+  <div class="nav-toggle" id="navToggle">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" id="mobileClose">✕</button>
+  <a href="index.html#profile">Profile</a>
+  <a href="index.html#career">Career</a>
+  <a href="index.html#clients">Clients</a>
+  <a href="gallery.html">Gallery</a>
+  <a href="index.html#contact">Contact</a>
+</div>
+
+<!-- PAGE HERO -->
+<div class="page-hero">
+  <p class="hero-eyebrow">Works</p>
+  <h1 class="hero-title">Gallery</h1>
+  <p class="hero-sub">Photography &nbsp;·&nbsp; Cinematography &nbsp;·&nbsp; Drone</p>
+  <div class="hero-line-bottom"></div>
+</div>
+
+<!-- GALLERY -->
+<div class="gallery-section">
+  <div class="filter-bar">
+    <p class="filter-label" id="postCount"></p>
+    <a class="instagram-link" href="https://www.instagram.com/united610/" target="_blank" rel="noopener">
+      ◎ &nbsp;@united610
+    </a>
+  </div>
+
+  <div class="grid" id="grid"></div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-inner">
+    <button class="lightbox-close" id="lightboxClose">✕</button>
+    <div class="lightbox-controls">
+      <button class="lb-arrow" id="lbPrev">&#8592;</button>
+      <button class="lb-arrow" id="lbNext">&#8594;</button>
+    </div>
+    <p class="lightbox-counter" id="lightboxCounter"></p>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <img class="footer-logo" src="img/UFLogo_white2.png" alt="United Functions">
+  <p class="footer-text">&copy; United Functions. All rights reserved.</p>
+</footer>
+
+<script>
+  const VIDEO_EXTS = ['.mp4', '.mov', '.webm'];
+  function isVideo(src) {
+    return VIDEO_EXTS.some(ext => src.toLowerCase().endsWith(ext));
+  }
+
+  let images = [];
+  let currentIndex = 0;
+
+  // ─── 画像一覧を取得してグリッド描画 ───
+  async function init() {
+    // 1. ローカルサーバーのAPIを試みる
+    try {
+      const res = await fetch('/api/gallery-images');
+      if (res.ok) {
+        images = await res.json();
+        renderGrid(images);
+        return;
+      }
+    } catch (_) {}
+
+    // 2. GitHub Pages などの静的環境ではJSONを読む
+    try {
+      const res = await fetch('gallery/images.json');
+      if (!res.ok) throw new Error();
+      images = await res.json();
+      renderGrid(images);
+    } catch {
+      document.getElementById('grid').innerHTML = `
+        <div style="padding:4rem 2rem; text-align:center;">
+          <p style="font-family:'Cormorant Garamond',serif; font-size:1.6rem; font-weight:300; margin-bottom:1rem;">画像リストが見つかりません</p>
+          <p style="font-size:0.82rem; color:var(--text-secondary); line-height:2;">
+            ターミナルで <code style="background:var(--bg-section); padding:0.2rem 0.6rem;">python3 update-gallery.py</code> を実行してください。
+          </p>
+        </div>`;
+    }
+  }
+
+  function renderGrid(imgs) {
+    const grid = document.getElementById('grid');
+    grid.innerHTML = '';
+    document.getElementById('postCount').textContent = `${imgs.length} 点`;
+
+    imgs.forEach((src, i) => {
+      const item = document.createElement('div');
+      item.className = 'grid-item';
+      const video = isVideo(src);
+
+      if (video) {
+        item.innerHTML = `
+          <video src="${src}" muted loop playsinline preload="metadata"></video>
+          <span class="video-badge">VIDEO</span>
+          <div class="grid-overlay">
+            <span class="overlay-icon">&#9654;</span>
+          </div>
+        `;
+        // ホバーでプレビュー再生
+        const vid = item.querySelector('video');
+        item.addEventListener('mouseenter', () => vid.play());
+        item.addEventListener('mouseleave', () => { vid.pause(); vid.currentTime = 0; });
+      } else {
+        item.innerHTML = `
+          <img src="${src}" alt="" loading="lazy">
+          <div class="grid-overlay">
+            <span class="overlay-icon">+</span>
+          </div>
+        `;
+      }
+
+      item.addEventListener('click', () => openLightbox(i));
+      item.style.transitionDelay = `${(i % 8) * 50}ms`;
+      grid.appendChild(item);
+    });
+
+    // スクロールでフェードイン
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.grid-item').forEach(el => observer.observe(el));
+  }
+
+  // ─── ライトボックス ───
+  function openLightbox(index) {
+    currentIndex = index;
+    updateLightbox();
+    document.getElementById('lightbox').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+    // 動画が開いていれば停止
+    const vid = document.querySelector('.lightbox-inner video');
+    if (vid) vid.pause();
+  }
+
+  function updateLightbox() {
+    const src      = images[currentIndex];
+    const inner    = document.querySelector('.lightbox-inner');
+    const existing = inner.querySelector('img, video');
+    if (existing) existing.remove();
+
+    let media;
+    if (isVideo(src)) {
+      media = document.createElement('video');
+      media.src      = src;
+      media.controls = true;
+      media.autoplay = true;
+      media.setAttribute('playsinline', '');
+    } else {
+      media = document.createElement('img');
+      media.src = src;
+      media.alt = '';
+    }
+
+    // controls の前に挿入
+    inner.insertBefore(media, inner.querySelector('.lightbox-controls'));
+    document.getElementById('lightboxCounter').textContent =
+      `${currentIndex + 1} / ${images.length}`;
+  }
+
+  function prev() {
+    currentIndex = (currentIndex - 1 + images.length) % images.length;
+    updateLightbox();
+  }
+
+  function next() {
+    currentIndex = (currentIndex + 1) % images.length;
+    updateLightbox();
+  }
+
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lbPrev').addEventListener('click', prev);
+  document.getElementById('lbNext').addEventListener('click', next);
+  document.getElementById('lightbox').addEventListener('click', e => {
+    if (e.target === document.getElementById('lightbox')) closeLightbox();
+  });
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('lightbox').classList.contains('open')) return;
+    if (e.key === 'Escape')     closeLightbox();
+    if (e.key === 'ArrowLeft')  prev();
+    if (e.key === 'ArrowRight') next();
+  });
+
+  // ─── モバイルメニュー ───
+  document.getElementById('navToggle').addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.add('open');
+  });
+  document.getElementById('mobileClose').addEventListener('click', () => {
+    document.getElementById('mobileMenu').classList.remove('open');
+  });
+
+  init();
+</script>
+</body>
+</html>
