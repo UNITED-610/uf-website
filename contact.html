@@ -6,33 +6,30 @@
   <title>Contact | United Functions</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=Noto+Serif+JP:wght@300;400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:             #ffffff;
-      --bg-section:     #f4f2ee;
-      --gold:           #a07840;
-      --gold-light:     #7a5c28;
-      --gold-dim:       rgba(160, 120, 64, 0.08);
-      --text-primary:   #1a1714;
-      --text-secondary: #5a5450;
-      --text-muted:     #a09890;
-      --border:         rgba(160, 120, 64, 0.22);
-      --border-subtle:  rgba(0, 0, 0, 0.08);
-      --error:          #c0392b;
+      --bg:     #ffffff;
+      --fg:     #000000;
+      --muted:  #666666;
+      --dim:    #aaaaaa;
+      --border: rgba(0,0,0,0.1);
+      --error:  #c0392b;
+      --font:   'Inter', 'Helvetica Neue', sans-serif;
     }
 
     html { scroll-behavior: smooth; }
 
     body {
       background: var(--bg);
-      color: var(--text-primary);
-      font-family: 'Inter', 'Noto Serif JP', sans-serif;
+      color: var(--fg);
+      font-family: var(--font);
       font-weight: 300;
-      line-height: 1.8;
       overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
     }
 
     /* ─── NAV ─── */
@@ -40,84 +37,57 @@
       position: fixed;
       top: 0; left: 0; right: 0;
       z-index: 100;
-      padding: 1.5rem 3rem;
+      padding: 1.2rem 3rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: rgba(255,255,255,0.92);
-      backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border-subtle);
+      background: rgba(255,255,255,0.96);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
     }
-    .nav-logo img { height: 22px; opacity: 0.85; transition: opacity 0.3s; }
-    .nav-logo img:hover { opacity: 1; }
+    .nav-logo img { height: 18px; transition: opacity 0.3s; }
+    .nav-logo img:hover { opacity: 0.5; }
     .nav-links { display: flex; gap: 2.5rem; list-style: none; }
     .nav-links a {
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 0.75rem;
-      letter-spacing: 0.15em;
-      text-transform: uppercase;
-      transition: color 0.3s;
+      color: var(--fg); text-decoration: none;
+      font-size: 0.68rem; font-weight: 400;
+      letter-spacing: 0.18em; text-transform: uppercase;
+      transition: opacity 0.3s;
     }
-    .nav-links a:hover,
-    .nav-links a.active { color: var(--gold); }
-    .nav-toggle {
-      display: none;
-      flex-direction: column;
-      gap: 5px;
-      cursor: pointer;
-      padding: 4px;
-    }
-    .nav-toggle span {
-      display: block; width: 24px; height: 1px;
-      background: var(--text-primary); transition: all 0.3s;
-    }
+    .nav-links a:hover, .nav-links a.active { opacity: 0.35; }
+    .nav-toggle { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-toggle span { display: block; width: 22px; height: 1px; background: var(--fg); }
 
-    /* ─── PAGE HERO ─── */
-    .page-hero {
-      padding: 10rem 3rem 4rem;
-      text-align: center;
-      background: var(--bg-section);
-      position: relative;
-      overflow: hidden;
+    /* ─── PAGE HEADER ─── */
+    .page-header {
+      padding: clamp(7rem, 14vw, 10rem) clamp(1.5rem, 4vw, 3rem) 0;
+      border-bottom: 1px solid var(--fg);
     }
-    .page-hero::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 80% at 50% 60%, rgba(160,120,64,0.06) 0%, transparent 70%);
+    .page-header-inner {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-bottom: 1.5rem;
     }
-    .hero-eyebrow {
-      font-size: 0.7rem;
-      letter-spacing: 0.4em;
+    .page-title {
+      font-size: clamp(3.5rem, 10vw, 9rem);
+      font-weight: 900;
+      letter-spacing: -0.04em;
       text-transform: uppercase;
-      color: var(--gold);
-      margin-bottom: 1rem;
+      line-height: 0.9;
     }
-    .hero-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
-      font-weight: 300;
-      letter-spacing: 0.08em;
-      color: var(--text-primary);
-      margin-bottom: 1rem;
-    }
-    .hero-sub {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      letter-spacing: 0.1em;
-    }
-    .hero-line-bottom {
-      width: 1px; height: 60px;
-      background: linear-gradient(to bottom, var(--gold), transparent);
-      margin: 2.5rem auto 0;
-      opacity: 0.4;
+    .page-sub {
+      font-size: 0.68rem;
+      letter-spacing: 0.22em;
+      color: var(--muted);
+      text-transform: uppercase;
     }
 
     /* ─── MAIN ─── */
     .contact-wrap {
-      max-width: 960px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding: 6rem 2rem 8rem;
+      padding: clamp(4rem, 8vw, 7rem) clamp(1.5rem, 4vw, 3rem) clamp(5rem, 10vw, 8rem);
       display: grid;
       grid-template-columns: 1fr 1.6fr;
       gap: 6rem;
@@ -125,224 +95,150 @@
     }
 
     /* ─── INFO ─── */
-    .contact-info { position: sticky; top: 7rem; }
+    .info { position: sticky; top: 6rem; }
 
     .info-label {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       letter-spacing: 0.3em;
       text-transform: uppercase;
-      color: var(--gold);
+      color: var(--dim);
       margin-bottom: 1.5rem;
     }
-
     .info-heading {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: clamp(1.6rem, 3vw, 2.2rem);
-      font-weight: 300;
-      letter-spacing: 0.06em;
-      color: var(--text-primary);
-      margin-bottom: 1.5rem;
-      line-height: 1.3;
-    }
-
-    .info-text {
-      font-size: 0.82rem;
-      color: var(--text-secondary);
-      line-height: 2;
-      margin-bottom: 2.5rem;
-    }
-
-    .info-divider {
-      width: 40px; height: 1px;
-      background: var(--border);
+      font-size: clamp(1.8rem, 3.5vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      text-transform: uppercase;
+      line-height: 1;
       margin-bottom: 2rem;
     }
-
-    .sns-links { display: flex; flex-direction: column; gap: 0.8rem; }
-
+    .info-text {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 2.1;
+      margin-bottom: 2.5rem;
+    }
+    .info-rule {
+      width: 32px; height: 1px;
+      background: var(--fg);
+      margin-bottom: 2rem;
+    }
+    .sns { display: flex; flex-direction: column; gap: 0.7rem; }
     .sns-link {
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      text-decoration: none;
-      color: var(--text-secondary);
-      font-size: 0.78rem;
-      letter-spacing: 0.08em;
-      transition: color 0.3s;
+      display: flex; align-items: center; gap: 0.8rem;
+      text-decoration: none; color: var(--muted);
+      font-size: 0.78rem; letter-spacing: 0.06em;
+      transition: color 0.25s;
     }
-    .sns-link:hover { color: var(--gold); }
+    .sns-link:hover { color: var(--fg); }
     .sns-icon {
-      width: 32px; height: 32px;
-      border: 1px solid var(--border);
+      width: 30px; height: 30px;
+      border: 1px solid var(--fg);
       display: flex; align-items: center; justify-content: center;
-      font-size: 0.75rem;
-      transition: border-color 0.3s, background 0.3s;
+      font-size: 0.72rem;
+      transition: background 0.22s, color 0.22s;
     }
-    .sns-link:hover .sns-icon {
-      border-color: var(--gold);
-      background: var(--gold-dim);
-    }
+    .sns-link:hover .sns-icon { background: var(--fg); color: var(--bg); }
 
     /* ─── FORM ─── */
-    .contact-form { width: 100%; }
-
     .form-group { margin-bottom: 1.8rem; }
-
     .form-label {
       display: block;
-      font-size: 0.68rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--text-secondary);
+      font-size: 0.62rem; letter-spacing: 0.22em;
+      text-transform: uppercase; color: var(--muted);
       margin-bottom: 0.6rem;
     }
-
-    .form-label .required {
-      color: var(--gold);
-      margin-left: 0.3rem;
-    }
-
+    .form-label .req { color: var(--fg); margin-left: 0.2rem; }
     .form-input,
     .form-textarea {
       width: 100%;
       padding: 0.85rem 1rem;
-      border: 1px solid var(--border-subtle);
-      border-bottom-color: var(--border);
-      background: var(--bg-section);
-      font-family: 'Inter', 'Noto Serif JP', sans-serif;
-      font-size: 0.85rem;
-      font-weight: 300;
-      color: var(--text-primary);
+      border: none;
+      border-bottom: 1px solid rgba(0,0,0,0.2);
+      background: #f8f8f8;
+      font-family: var(--font);
+      font-size: 0.85rem; font-weight: 300;
+      color: var(--fg);
       outline: none;
-      transition: border-color 0.3s, background 0.3s;
+      transition: border-color 0.25s, background 0.25s;
       appearance: none;
     }
-
-    .form-input:focus,
-    .form-textarea:focus {
-      border-color: var(--gold);
+    .form-input:focus, .form-textarea:focus {
+      border-bottom-color: var(--fg);
       background: #fff;
     }
+    .form-input.err, .form-textarea.err { border-bottom-color: var(--error); }
+    .form-textarea { resize: vertical; min-height: 160px; line-height: 1.8; }
 
-    .form-textarea {
-      resize: vertical;
-      min-height: 180px;
-      line-height: 1.8;
-    }
-
-    .form-input.error,
-    .form-textarea.error {
-      border-color: var(--error);
-    }
-
-    .field-error {
-      font-size: 0.68rem;
-      color: var(--error);
-      margin-top: 0.4rem;
-      display: none;
-    }
-    .field-error.show { display: block; }
+    .field-err { font-size: 0.65rem; color: var(--error); margin-top: 0.4rem; display: none; }
+    .field-err.show { display: block; }
 
     /* ─── SUBMIT ─── */
-    .form-submit {
+    .form-foot {
       margin-top: 2.5rem;
-      display: flex;
-      align-items: center;
-      gap: 1.5rem;
-      flex-wrap: wrap;
+      display: flex; align-items: center; gap: 1.5rem; flex-wrap: wrap;
     }
-
     .btn-submit {
-      padding: 0.9rem 2.8rem;
-      background: var(--gold);
-      color: #fff;
-      border: none;
-      font-family: 'Inter', sans-serif;
-      font-size: 0.72rem;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.2s;
+      padding: 0.9rem 2.5rem;
+      background: var(--fg); color: var(--bg);
+      border: none; font-family: var(--font);
+      font-size: 0.68rem; letter-spacing: 0.2em; text-transform: uppercase;
+      cursor: pointer; font-weight: 400;
+      transition: background 0.25s, transform 0.15s;
     }
-    .btn-submit:hover  { background: var(--gold-light); }
+    .btn-submit:hover  { background: #333; }
     .btn-submit:active { transform: scale(0.98); }
-    .btn-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-submit:disabled { opacity: 0.4; cursor: not-allowed; }
+    .submit-note { font-size: 0.65rem; color: var(--dim); letter-spacing: 0.05em; }
 
-    .submit-note {
-      font-size: 0.68rem;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-    }
-
-    /* ─── SUCCESS / ERROR STATE ─── */
-    .form-result {
-      display: none;
-      padding: 1.5rem 2rem;
-      margin-top: 2rem;
-      font-size: 0.82rem;
-      line-height: 1.9;
-    }
+    /* ─── RESULT ─── */
+    .form-result { display: none; padding: 1.5rem; margin-top: 2rem; font-size: 0.82rem; line-height: 1.9; }
     .form-result.success {
       display: block;
-      border-left: 2px solid var(--gold);
-      color: var(--text-secondary);
-      background: var(--gold-dim);
+      border-left: 2px solid var(--fg);
+      background: #f8f8f8; color: var(--muted);
     }
     .form-result.fail {
       display: block;
       border-left: 2px solid var(--error);
-      color: var(--error);
-      background: rgba(192,57,43,0.05);
+      background: rgba(192,57,43,0.04); color: var(--error);
     }
 
     /* ─── FOOTER ─── */
     footer {
-      padding: 3rem;
-      text-align: center;
-      border-top: 1px solid var(--border-subtle);
-      background: var(--bg-section);
+      padding: 2.5rem 3rem; border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
     }
-    .footer-logo { height: 28px; opacity: 0.7; margin-bottom: 1.2rem; }
-    .footer-text { font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.15em; }
+    .footer-logo { height: 16px; }
+    .footer-text { font-size: 0.62rem; letter-spacing: 0.18em; color: var(--dim); text-transform: uppercase; }
 
     /* ─── MOBILE MENU ─── */
-    .mobile-menu {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(255,255,255,0.98);
-      z-index: 99;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 2.5rem;
+    .mob-menu {
+      display: none; position: fixed; inset: 0;
+      background: #000; z-index: 200;
+      flex-direction: column; justify-content: center; align-items: center; gap: 1.8rem;
     }
-    .mobile-menu.open { display: flex; }
-    .mobile-menu a {
-      color: var(--text-primary);
-      text-decoration: none;
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 2rem;
-      letter-spacing: 0.1em;
-      transition: color 0.3s;
+    .mob-menu.open { display: flex; }
+    .mob-menu a {
+      color: #fff; text-decoration: none;
+      font-size: clamp(2rem, 8vw, 3.5rem);
+      font-weight: 800; letter-spacing: -0.03em; text-transform: uppercase;
+      transition: opacity 0.3s;
     }
-    .mobile-menu a:hover { color: var(--gold); }
-    .mobile-close {
+    .mob-menu a:hover { opacity: 0.35; }
+    .mob-close {
       position: absolute; top: 1.5rem; right: 2rem;
-      background: none; border: none;
-      color: var(--text-secondary); font-size: 1.5rem; cursor: pointer;
+      background: none; border: none; color: #fff; font-size: 1.5rem; cursor: pointer;
     }
 
     @media (max-width: 768px) {
       nav { padding: 1rem 1.5rem; }
       .nav-links { display: none; }
       .nav-toggle { display: flex; }
-      .page-hero { padding: 8rem 2rem 3rem; }
-      .contact-wrap {
-        grid-template-columns: 1fr;
-        gap: 3rem;
-        padding: 4rem 1.5rem 6rem;
-      }
-      .contact-info { position: static; }
+      .page-header-inner { flex-direction: column; align-items: flex-start; gap: 1rem; }
+      .contact-wrap { grid-template-columns: 1fr; gap: 3rem; }
+      .info { position: static; }
+      footer { flex-direction: column; gap: 1rem; text-align: center; }
     }
   </style>
 </head>
@@ -360,14 +256,12 @@
     <li><a href="gallery.html">Gallery</a></li>
     <li><a href="contact.html" class="active">Contact</a></li>
   </ul>
-  <div class="nav-toggle" id="navToggle">
-    <span></span><span></span><span></span>
-  </div>
+  <div class="nav-toggle" id="navToggle"><span></span><span></span><span></span></div>
 </nav>
 
 <!-- MOBILE MENU -->
-<div class="mobile-menu" id="mobileMenu">
-  <button class="mobile-close" id="mobileClose">✕</button>
+<div class="mob-menu" id="mobMenu">
+  <button class="mob-close" id="mobClose">✕</button>
   <a href="index.html#profile">Profile</a>
   <a href="index.html#career">Career</a>
   <a href="index.html#clients">Clients</a>
@@ -375,103 +269,73 @@
   <a href="contact.html">Contact</a>
 </div>
 
-<!-- PAGE HERO -->
-<div class="page-hero">
-  <p class="hero-eyebrow">Get in Touch</p>
-  <h1 class="hero-title">Contact</h1>
-  <p class="hero-sub">お問い合わせ・ご依頼はこちらから</p>
-  <div class="hero-line-bottom"></div>
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div class="page-header-inner">
+    <h1 class="page-title">Contact</h1>
+    <span class="page-sub">Get in Touch</span>
+  </div>
 </div>
 
 <!-- MAIN -->
 <div class="contact-wrap">
 
   <!-- INFO -->
-  <div class="contact-info">
+  <div class="info">
     <p class="info-label">United Functions</p>
-    <h2 class="info-heading">お気軽に<br>ご連絡ください</h2>
+    <h2 class="info-heading">お気軽に<br>ご連絡を</h2>
     <p class="info-text">
       撮影・映像制作・ドローン空撮など、<br>
       各種ご依頼・ご相談はフォームよりお送りください。<br>
       通常2〜3営業日以内にご返信いたします。
     </p>
-    <div class="info-divider"></div>
-    <div class="sns-links">
+    <div class="info-rule"></div>
+    <div class="sns">
       <a class="sns-link" href="https://www.facebook.com/UNITEDFUNCTIONS" target="_blank" rel="noopener">
-        <span class="sns-icon">f</span>
-        Facebook
+        <span class="sns-icon">f</span>Facebook
       </a>
       <a class="sns-link" href="https://www.instagram.com/united610/" target="_blank" rel="noopener">
-        <span class="sns-icon">◎</span>
-        @united610
+        <span class="sns-icon">◎</span>@united610
       </a>
     </div>
   </div>
 
   <!-- FORM -->
-  <div class="contact-form">
+  <form id="contactForm" novalidate>
+    <div class="form-group">
+      <label class="form-label" for="name">お名前 <span class="req">*</span></label>
+      <input class="form-input" type="text" id="name" name="name"
+             placeholder="山田 太郎" autocomplete="name" required>
+      <p class="field-err" id="nameError">お名前を入力してください</p>
+    </div>
 
-    <!--
-    ================================================================
-    Google フォーム連携の設定方法
-    ================================================================
-    1. https://docs.google.com/forms/ で新しいフォームを作成
-       （フィールド：お名前、メールアドレス、件名、メッセージ）
+    <div class="form-group">
+      <label class="form-label" for="email">メールアドレス <span class="req">*</span></label>
+      <input class="form-input" type="email" id="email" name="email"
+             placeholder="example@email.com" autocomplete="email" required>
+      <p class="field-err" id="emailError">正しいメールアドレスを入力してください</p>
+    </div>
 
-    2. フォームを公開し、右上「︙」→「事前入力したURLを取得」
-       でURLを確認。各フィールドのentry.XXXXXXXXX番号をメモ。
+    <div class="form-group">
+      <label class="form-label" for="subject">件名</label>
+      <input class="form-input" type="text" id="subject" name="subject"
+             placeholder="撮影のご依頼について">
+    </div>
 
-    3. 下記 FORM_ACTION と ENTRY_* を書き換えてください：
-    ================================================================
-    -->
+    <div class="form-group">
+      <label class="form-label" for="message">メッセージ <span class="req">*</span></label>
+      <textarea class="form-textarea" id="message" name="message"
+                placeholder="ご依頼内容・撮影場所・日程などをお知らせください" required></textarea>
+      <p class="field-err" id="messageError">メッセージを入力してください</p>
+    </div>
 
-    <form id="contactForm" novalidate>
+    <div class="form-foot">
+      <button class="btn-submit" type="submit" id="submitBtn">Send Message</button>
+      <p class="submit-note">* は必須項目です</p>
+    </div>
 
-      <!-- ↓↓↓ GoogleフォームのURL（/viewform → /formResponse に変更）↓↓↓ -->
-      <!-- action="https://docs.google.com/forms/d/e/XXXXXXXXXXXXXXXXXX/formResponse" -->
-
-      <div class="form-group">
-        <label class="form-label" for="name">
-          お名前 <span class="required">*</span>
-        </label>
-        <input class="form-input" type="text" id="name" name="name"
-               placeholder="山田 太郎" autocomplete="name" required>
-        <p class="field-error" id="nameError">お名前を入力してください</p>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="email">
-          メールアドレス <span class="required">*</span>
-        </label>
-        <input class="form-input" type="email" id="email" name="email"
-               placeholder="example@email.com" autocomplete="email" required>
-        <p class="field-error" id="emailError">正しいメールアドレスを入力してください</p>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="subject">件名</label>
-        <input class="form-input" type="text" id="subject" name="subject"
-               placeholder="撮影のご依頼について">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label" for="message">
-          メッセージ <span class="required">*</span>
-        </label>
-        <textarea class="form-textarea" id="message" name="message"
-                  placeholder="ご依頼内容・撮影場所・日程などをお知らせください" required></textarea>
-        <p class="field-error" id="messageError">メッセージを入力してください</p>
-      </div>
-
-      <div class="form-submit">
-        <button class="btn-submit" type="submit" id="submitBtn">Send Message</button>
-        <p class="submit-note">* は必須項目です</p>
-      </div>
-
-      <div class="form-result" id="formResult"></div>
-    </form>
-
-  </div>
+    <div class="form-result" id="formResult"></div>
+  </form>
 
 </div>
 
@@ -482,66 +346,42 @@
 </footer>
 
 <script>
-  // ================================================================
-  // Web3Forms 設定
-  // ACCESS_KEY を取得後、以下に貼り付けてください
-  // 取得方法: https://web3forms.com に muto@united-fn.com を入力
-  //          → 届いたメールのリンクをクリック → キーをコピー
-  // ================================================================
-
   const ACCESS_KEY = 'b8de8617-6c53-4b00-badb-30bc8776a7b9';
-
-  // ================================================================
 
   const form      = document.getElementById('contactForm');
   const submitBtn = document.getElementById('submitBtn');
   const result    = document.getElementById('formResult');
 
-  // バリデーション
   function validate() {
     let ok = true;
-
     const name  = document.getElementById('name');
     const email = document.getElementById('email');
     const msg   = document.getElementById('message');
-
     [name, email, msg].forEach(el => {
-      el.classList.remove('error');
+      el.classList.remove('err');
       document.getElementById(el.id + 'Error').classList.remove('show');
     });
-
     if (!name.value.trim()) {
-      name.classList.add('error');
+      name.classList.add('err');
       document.getElementById('nameError').classList.add('show');
       ok = false;
     }
     if (!email.value.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
-      email.classList.add('error');
+      email.classList.add('err');
       document.getElementById('emailError').classList.add('show');
       ok = false;
     }
     if (!msg.value.trim()) {
-      msg.classList.add('error');
+      msg.classList.add('err');
       document.getElementById('messageError').classList.add('show');
       ok = false;
     }
-
     return ok;
   }
 
-  form.addEventListener('submit', async function(e) {
+  form.addEventListener('submit', async e => {
     e.preventDefault();
     if (!validate()) return;
-
-    if (!ACCESS_KEY) {
-      result.className = 'form-result fail';
-      result.innerHTML = `
-        <strong style="display:block; margin-bottom:0.4rem;">ACCESS_KEY が未設定です</strong>
-        <a href="https://web3forms.com" target="_blank" style="color:var(--gold);">web3forms.com</a> でキーを取得し、
-        <code>contact.html</code> の <code>ACCESS_KEY</code> に貼り付けてください。
-      `;
-      return;
-    }
 
     submitBtn.disabled    = true;
     submitBtn.textContent = 'Sending...';
@@ -559,48 +399,40 @@
           botcheck:   '',
         })
       });
-
       const data = await res.json();
-
       if (data.success) {
         form.reset();
         result.className = 'form-result success';
         result.innerHTML = `
-          <strong style="display:block; margin-bottom:0.4rem; font-size:0.9rem;">送信完了しました</strong>
-          お問い合わせいただきありがとうございます。<br>
-          通常2〜3営業日以内にご返信いたします。
-        `;
+          <strong style="display:block;margin-bottom:.4rem;font-size:.9rem;">送信完了しました</strong>
+          お問い合わせいただきありがとうございます。<br>通常2〜3営業日以内にご返信いたします。`;
         result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       } else {
         throw new Error(data.message || 'error');
       }
-    } catch (err) {
+    } catch {
       result.className = 'form-result fail';
-      result.innerHTML = `
-        <strong style="display:block; margin-bottom:0.4rem;">送信に失敗しました</strong>
-        通信エラーが発生しました。時間をおいて再度お試しください。
-      `;
+      result.innerHTML = `<strong style="display:block;margin-bottom:.4rem;">送信に失敗しました</strong>通信エラーが発生しました。時間をおいて再度お試しください。`;
     } finally {
       submitBtn.disabled    = false;
       submitBtn.textContent = 'Send Message';
     }
   });
 
-  // リアルタイムバリデーション解除
   ['name','email','message'].forEach(id => {
     document.getElementById(id).addEventListener('input', function() {
-      this.classList.remove('error');
+      this.classList.remove('err');
       document.getElementById(id + 'Error').classList.remove('show');
     });
   });
 
-  // モバイルメニュー
-  document.getElementById('navToggle').addEventListener('click', () => {
-    document.getElementById('mobileMenu').classList.add('open');
-  });
-  document.getElementById('mobileClose').addEventListener('click', () => {
-    document.getElementById('mobileMenu').classList.remove('open');
-  });
+  // GSAP entrance
+  gsap.from('.page-title', { opacity: 0, y: 30, duration: 0.8, delay: 0.2, ease: 'power3.out' });
+  gsap.from('.info',       { opacity: 0, y: 20, duration: 0.8, delay: 0.4, ease: 'power3.out' });
+  gsap.from('form',        { opacity: 0, y: 20, duration: 0.8, delay: 0.5, ease: 'power3.out' });
+
+  document.getElementById('navToggle').addEventListener('click', () => document.getElementById('mobMenu').classList.add('open'));
+  document.getElementById('mobClose').addEventListener('click', () => document.getElementById('mobMenu').classList.remove('open'));
 </script>
 </body>
 </html>
