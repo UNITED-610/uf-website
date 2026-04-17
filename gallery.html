@@ -352,6 +352,7 @@
   function renderGrid(imgs) {
     const grid = document.getElementById('grid');
     grid.innerHTML = '';
+    imgs = imgs.filter(s => !isVideo(s) && !isYT(s));
     document.getElementById('postCount').textContent = `${imgs.length} works`;
 
     imgs.forEach((src, i) => {
